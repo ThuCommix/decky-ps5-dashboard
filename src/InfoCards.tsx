@@ -170,7 +170,7 @@ function AchievementsCard({ app, onFocus }: { app: App; onFocus: () => void }) {
   );
 }
 
-/** The cards under a game's Play button, PS5 style. */
+/** The cards to the right of a game's Play button, PS5 style. */
 export function GameCards({ app, onFocus }: { app: App; onFocus: () => void }) {
   if (!currentSettings().infoCards) return null;
   const steam = app.app_type !== APP_TYPE_SHORTCUT;

@@ -104,7 +104,7 @@ function Backdrop({ app, dim }: { app?: App; dim: boolean }) {
   );
 }
 
-/** Logo (or name), "Played today · 42 h played", then the white Play pill and the round "…" button. */
+/** Logo (or name), "Played today · 42 h played", then the white Play pill, the round "…" button and the info cards. */
 function GameInfo({ pick, onFocus }: { pick?: Pick; onFocus: () => void }) {
   const hookApp = pick && "app" in pick ? pick.app : undefined;
   const played = bestPlaytime(hookApp, usePlaytime(hookApp));
@@ -115,12 +115,14 @@ function GameInfo({ pick, onFocus }: { pick?: Pick; onFocus: () => void }) {
         <div className="psd-info-icon">{pick.icon}</div>
         <div className="psd-info-title">{pick.title}</div>
         <div className="psd-info-sub">{pick.description}</div>
-        <Focusable className="psd-buttons" flow-children="row">
-          <Button label={t.open} preferredFocus onActivate={pick.go} onFocus={onFocus}>
-            {t.open}
-          </Button>
-        </Focusable>
-        <ActionCards cards={pick.cards} onFocus={onFocus} />
+        <div className="psd-action-row">
+          <Focusable className="psd-buttons" flow-children="row">
+            <Button label={t.open} preferredFocus onActivate={pick.go} onFocus={onFocus}>
+              {t.open}
+            </Button>
+            <ActionCards cards={pick.cards} onFocus={onFocus} />
+          </Focusable>
+        </div>
       </div>
     );
   }
@@ -137,16 +139,18 @@ function GameInfo({ pick, onFocus }: { pick?: Pick; onFocus: () => void }) {
         fallback={<div className="psd-info-title">{app.display_name}</div>}
       />
       <div className="psd-info-sub">{sub}</div>
-      <Focusable className="psd-buttons" flow-children="row">
-        <Button label={label} preferredFocus onActivate={() => launch(app)} onFocus={onFocus}>
-          {playable && <MdPlayArrow />}
-          {label}
-        </Button>
-        <Button round label={t.moreOptions} onActivate={(anchor) => openGameMenu(app, anchor)} onFocus={onFocus}>
-          <MdMoreHoriz />
-        </Button>
-      </Focusable>
-      <GameCards app={app} onFocus={onFocus} />
+      <div className="psd-action-row">
+        <Focusable className="psd-buttons" flow-children="row">
+          <Button label={label} preferredFocus onActivate={() => launch(app)} onFocus={onFocus}>
+            {playable && <MdPlayArrow />}
+            {label}
+          </Button>
+          <Button round label={t.moreOptions} onActivate={(anchor) => openGameMenu(app, anchor)} onFocus={onFocus}>
+            <MdMoreHoriz />
+          </Button>
+          <GameCards app={app} onFocus={onFocus} />
+        </Focusable>
+      </div>
     </div>
   );
 }

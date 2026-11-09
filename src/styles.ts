@@ -163,16 +163,14 @@ export const PS5_CSS = `
   height: var(--psd-big); padding: 0 4vw;
   transition: transform 340ms cubic-bezier(0.22, 0.8, 0.24, 1); will-change: transform;
 }
-/* Bottom padding keeps the cards clear of Steam's button-hint footer. The height is chosen so the
-   cards' bottom edge stays at its 100%-scale screen position (76vh + 46px from the top: the 100%
-   first screen minus the 7vh padding) at every uiScale. That matters because the zoom grows every
-   vh of content while the footer is a Steam overlay that doesn't zoom, so a screen-filling hero
-   would push the cards into the footer; a plain 57vh hero pushes them below the fold. The hero's
-   empty space absorbs the excess; 46px + 19vh is .psd-top-space (46px + 8vh) plus the home row
-   (18vh, margin-top 0) minus the padding. */
+/* Bottom padding keeps the cards clear of Steam's button-hint footer. The height caps so the
+   hero's bottom edge stays at its 100%-scale screen position (46px + 8vh top space, 24.6vh home
+   row, 57vh hero) at every uiScale: the zoom grows every vh of content while the footer is a
+   Steam overlay that doesn't zoom, so a plain 57vh hero would push the cards below the visible
+   screen. The hero's empty space above the logo absorbs the excess. */
 .psd-hero {
   position: relative;
-  height: min(57vh, calc((76vh + 46px) / var(--psd-scale, 1) - 46px - 19vh));
+  height: min(57vh, calc((46px + 89.6vh) / var(--psd-scale, 1) - 46px - 32.6vh));
   padding: 0 4vw 7vh;
   display: flex; flex-direction: column; justify-content: flex-end;
 }
@@ -188,17 +186,20 @@ export const PS5_CSS = `
   max-width: 60vw; font-size: 5vh; font-weight: 600; line-height: 1.1; text-shadow: 0 2px 10px rgba(0,0,0,0.75);
 }
 .psd-info-sub { margin-top: 1.4vh; font-size: 2vh; opacity: 0.88; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
-.psd-buttons { display: flex; align-items: center; gap: 1.6vh; margin-top: 2.4vh; }
+/* Play + "…" on the left, the info cards in the free space to their right. */
+.psd-action-row { display: flex; align-items: center; gap: 1.6vh; margin-top: 2.4vh; flex-shrink: 0; }
+.psd-buttons { display: flex; align-items: center; gap: 1.6vh; flex: 0 0 auto; }
 /* At high uiScale the capped hero can be shorter than its content; the bottom-aligned overflow would
    spill up over the home row, so the logo (the only oversized piece) is allowed to flex down while
    the buttons and cards keep their size. */
 .psd-info-logo, .psd-info-icon, .psd-info-title { min-height: 0; }
-.psd-info-sub, .psd-buttons, .psd-infocards { flex-shrink: 0; }
+.psd-info-sub, .psd-action-row { flex-shrink: 0; }
 
-/* ---------- info cards under Play (HowLongToBeat, playtime, reviews, achievements) ---------- */
-.psd-infocards { display: flex; align-items: stretch; gap: 1.6vh; margin-top: 2.6vh; }
+/* ---------- info cards to the right of Play (HowLongToBeat, playtime, reviews, achievements) ---------- */
+/* min-width: 0 lets the row shrink; the cards give up width before the row runs off the screen. */
+.psd-infocards { display: flex; align-items: center; gap: 1.6vh; min-width: 0; }
 .psd-infocard {
-  position: relative; flex: 0 0 auto; height: 14vh; padding: 1.3vh 1.8vh;
+  position: relative; flex: 0 1 auto; min-width: 15vh; height: 14vh; padding: 1.3vh 1.8vh;
   display: flex; flex-direction: column; gap: 0.7vh;
   border-radius: var(--psd-cr); background: rgba(10,14,26,0.74);
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
@@ -231,7 +232,8 @@ export const PS5_CSS = `
 .psd-infocard-muted { margin-bottom: auto; margin-top: 0.6vh; }
 .psd-pulse { animation: psd-pulse 1.2s ease-in-out 3; }
 @keyframes psd-pulse { 50% { opacity: 0.45; } }
-.psd-hltb { display: flex; gap: 2.2vh; }
+/* Wraps when the card is squeezed by a high uiScale. */
+.psd-hltb { display: flex; gap: 2.2vh; flex-wrap: wrap; }
 .psd-hltb-time { font-size: 2.6vh; font-weight: 600; line-height: 1.1; }
 .psd-hltb-label { font-size: 1.45vh; color: rgba(255,255,255,0.65); }
 .psd-bar { height: 0.6vh; border-radius: 999px; background: rgba(255,255,255,0.14); overflow: hidden; }
@@ -239,7 +241,7 @@ export const PS5_CSS = `
   height: 100%; border-radius: inherit; transform-origin: 0 50%;
   background: linear-gradient(90deg, var(--psd-ca), color-mix(in srgb, var(--psd-ca) 45%, #fff));
 }
-.psd-ach-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 1vh; }
+.psd-ach-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 1vh; flex-wrap: wrap; }
 .psd-ach-icons { display: flex; gap: 0.5vh; }
 .psd-ach-icon { width: 3.4vh; height: 3.4vh; border-radius: 0.6vh; object-fit: cover; box-shadow: 0 0 0 1px rgba(255,255,255,0.15); }
 .psd-chips-mini { display: flex; flex-wrap: wrap; gap: 0.5vh; }
