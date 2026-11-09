@@ -199,7 +199,7 @@ export const PS5_CSS = `
 /* min-width: 0 lets the row shrink; the cards give up width before the row runs off the screen. */
 .psd-infocards { display: flex; align-items: center; gap: 1.6vh; min-width: 0; }
 .psd-infocard {
-  position: relative; flex: 0 1 auto; min-width: 15vh; height: 14vh; padding: 1.3vh 1.8vh;
+  position: relative; flex: 1 1 auto; min-width: 0; height: 14vh; padding: 1.3vh 1.8vh; overflow: hidden;
   display: flex; flex-direction: column; gap: 0.7vh;
   border-radius: var(--psd-cr); background: rgba(10,14,26,0.74);
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
@@ -215,19 +215,24 @@ export const PS5_CSS = `
 }
 .psd-infocard.psd-focused { background: rgba(28,36,58,0.92); transform: scale(1.03); }
 .psd-infocard.psd-focused::after { opacity: 1; }
-.psd-infocard-s { width: 22vh; }
-.psd-infocard-m { width: 31vh; }
-.psd-infocard-l { width: 40vh; }
+/* flex-basis is the card's size with room to spare; max-width keeps it there, and when all four
+   cards show at once they shrink to share the free width instead of running off the screen. */
+.psd-infocard-s { flex-basis: 22vh; max-width: 22vh; }
+.psd-infocard-m { flex-basis: 31vh; max-width: 31vh; }
+.psd-infocard-l { flex-basis: 40vh; max-width: 40vh; }
 .psd-infocard-head {
   display: flex; align-items: center; gap: 0.8vh;
   font-size: 1.6vh; font-weight: 600; letter-spacing: 0.02em; color: rgba(255,255,255,0.7);
 }
 .psd-infocard-icon { display: flex; font-size: 2.1vh; color: color-mix(in srgb, var(--psd-ca) 55%, #fff); }
 .psd-infocard-body { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 0.5vh; }
-.psd-infocard-big { font-size: 2.9vh; font-weight: 600; line-height: 1.1; white-space: nowrap; }
+/* min-width: 0 + ellipsis: values are longer than the card in some languages and must clip instead
+   of pushing it wider; the "all unlocked" value drops to a smaller size so it usually fits whole. */
+.psd-infocard-big { min-width: 0; font-size: 2.9vh; font-weight: 600; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.psd-infocard-big-small { font-size: 2.15vh; }
 .psd-infocard-unit { margin-left: 0.7vh; font-size: 1.6vh; font-weight: 400; color: rgba(255,255,255,0.7); }
 .psd-infocard-caption, .psd-infocard-muted {
-  font-size: 1.55vh; color: rgba(255,255,255,0.7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: 1.35vh; color: rgba(255,255,255,0.7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .psd-infocard-muted { margin-bottom: auto; margin-top: 0.6vh; }
 .psd-pulse { animation: psd-pulse 1.2s ease-in-out 3; }

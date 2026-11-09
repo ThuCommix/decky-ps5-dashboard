@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.11.0
+
+- **The clock is on the dashboard.** The PS5's top-right corner now shows the current time, ticking live and
+  following SteamOS' own "24-hour clock" setting, so it's 12-hour or 24-hour exactly the way you set it. It reads
+  the setting from the Steam client's own API rather than parsing Steam's config files, so it always matches.
+- **Battery indicator.** Beside the clock sits the PS5's monochrome battery: a vertical outlined cell that fills
+  with the charge level, a terminal on top, a bolt while it's on AC power, and the percentage next to it — but only
+  when SteamOS' "Show Battery Percentage" toggle is on. Low charge tints the cell yellow (11–20%) or red (0–10%),
+  and on a console without a battery the icon simply disappears.
+- **New setting: UI scale.** Under the Appearance section, scales the plugin's own screens between 80% and 160%
+  (100% is the default) — handy on a small handheld or a large TV display.
+- **New setting: Hide top bar status.** Under the Layout section, hides the clock, WiFi, battery and avatar from
+  Steam's own top bar, since the PS5 bar already shows them. It only applies while the PS5 home screen is on, so
+  Steam's bar is never left without a status bar of its own.
+- **Correct playtime for non-Steam games.** Steam's library overview reports 0 for non-Steam shortcuts (it only
+  counts the running session), so the "Your time" card and the playtime under the Play button now read Steam's own
+  playtime, which knows the accumulated hours. Lookups run only for shortcuts and are cached for a minute.
+- **Info cards sit to the right of Play.** The time-to-beat, playtime and achievements cards now live in the free
+  space beside the Play button instead of under it, so the focus flows to them naturally and they fit without
+  crowding the buttons.
+- The game's hero area now caps its height at high UI scale, so the cards never spill into Steam's button-hint
+  footer or below the fold.
+
 ## 1.10.0
 
 - **The plugin speaks your Steam language.** 1.9.0 detected Steam's language, but the plugin only had English and

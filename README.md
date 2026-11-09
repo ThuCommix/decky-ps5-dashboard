@@ -52,6 +52,24 @@ A [Decky Loader](https://decky.xyz) plugin for the Steam Deck and other handheld
   Chinese. Any other Steam language gets English. Translations live in `src/locales/`, one file per language, and
   improvements are welcome.
 
+## What this fork adds
+
+This repository is a fork of the main [PS5 Dashboard](https://github.com/kromossomom-debug/decky-ps5-dashboard)
+project by [kromossomo](https://github.com/kromossomom-debug), branched from v1.10.0. Everything in the main project
+is here; on top of it this fork adds:
+
+- **A clock.** The PS5's top-right corner now shows the current time, ticking live and following SteamOS' own
+  "24-hour clock" setting, so it's 12-hour or 24-hour exactly the way you set it.
+- **A battery indicator.** Next to the clock, a PS5-style battery: a cell that fills with the charge level, a bolt
+  while on AC power, low-charge yellow and red tints, and the percentage when SteamOS' "Show Battery Percentage" is
+  on. On a console without a battery it disappears.
+- **UI scale.** A new setting (80–160%, default 100%) that scales the plugin's own screens — handy on a small
+  handheld or a large TV.
+- **Hide top bar status.** A new setting that hides the clock, WiFi, battery and avatar from Steam's own top bar,
+  since the PS5 bar already shows them.
+- **Correct playtime for non-Steam games.** Non-Steam shortcuts now show their real accumulated playtime instead of
+  the 0 that Steam's library overview reports for them.
+
 ## Screenshots
 
 | | |
@@ -108,17 +126,21 @@ Everything lives in the plugin panel in Quick Access. Settings are saved to
 |---|---|---|
 | Enable PS5 look | Turns the whole theme on or off | On |
 | PS5 home screen | Replaces Steam's home with the PS5 one | On |
-| Open Steam's library | The Game Library tile and shortcuts open Steam's own library (handy with TabMaster) | Off |
-| Info cards | Cards under the Play button | On |
+| Info cards | HowLongToBeat, playtime, reviews and achievement cards beside the Play button | On |
 | HowLongToBeat | Looks up how long each game takes to beat | On |
+| Open Steam's library | The Game Library tile and shortcuts open Steam's own library (handy with TabMaster) | Off |
 | PS5 colors everywhere | Repaints Steam's own colors | On |
 | Accent color | PlayStation blue or a console / DualSense color | PlayStation blue |
 | Home background | Game art, accent gradient or dark | Game art |
 | Focus | White glow (PS5) or accent glow | White |
+| Space for the art | Free space above the recent row on Steam's own home (PS5 home screen off) | 18 vh |
 | Tile corner radius | 0–24 px | 12 px |
+| UI scale | Scales the PS5 screens, 80–160% (handy on small handhelds or large TVs) | 100% |
 | Control Center-style menus | Restyles the Steam menu, Quick Access and option menus | On |
 | Style Steam's library | PS5-style capsules, focus and tabs in Steam's own library; turn off for Steam's look or TabMaster | On |
 | Clean home screen | Hides What's New, Friends and Recommended on Steam's own home | Off |
+| Hide bottom bar | Hides the controller button hints (A, B, X, Y) at the bottom of the screen | Off |
+| Hide top bar status | Hides the clock, WiFi, battery and avatar from Steam's own top bar (PS5 home on only) | On |
 | PlayStation-style font | Uses SST if installed, otherwise Noto Sans | On |
 
 ## Performance

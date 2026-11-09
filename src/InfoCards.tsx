@@ -16,7 +16,9 @@ export interface ActionCard {
   go: () => void;
 }
 
-/** One PS5-style card: dark glass panel, title row with an icon, white glow when focused. */
+/** One PS5-style card: dark glass panel, title row with an icon, white glow when focused.
+ *  No per-card button hint: the footer lists every hint of the focused group, and with four cards
+ *  that wraps the bottom bar. The row of cards carries one shared "A" hint instead. */
 function InfoCard({
   icon,
   title,
@@ -155,7 +157,7 @@ function AchievementsCard({ app, onFocus }: { app: App; onFocus: () => void }) {
       onFocus={onFocus}
     >
       <div className="psd-ach-top">
-        <div className="psd-infocard-big">
+        <div className={done === total ? "psd-infocard-big psd-infocard-big-small" : "psd-infocard-big"}>
           {done === total ? t.cardAchievementsAll : t.cardAchievementsOf(done, total)}
         </div>
         <div className="psd-ach-icons">

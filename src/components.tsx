@@ -112,7 +112,6 @@ export function Tile(p: TileProps) {
       onOptionsButton={p.onOptions}
       onOptionsActionDescription={p.onOptions ? t.details : undefined}
       onMenuButton={p.onMenu ? (e: GamepadEvent) => p.onMenu?.(e.currentTarget) : undefined}
-      onMenuActionDescription={p.onMenu ? t.gameMenu : undefined}
       onButtonDown={
         p.onMenu
           ? (e: GamepadEvent) => {
@@ -120,7 +119,6 @@ export function Tile(p: TileProps) {
             }
           : undefined
       }
-      actionDescriptionMap={p.onMenu ? { [GamepadButton.SELECT]: t.gameMenu } : undefined}
     >
       <div className="psd-tile-box">
         {p.size === "home" && (
