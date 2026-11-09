@@ -13,15 +13,25 @@ export interface Battery {
 const clamp = (n: number) => Math.max(0, Math.min(100, n));
 
 /**
+ * Module-level cache of the latest reading. The battery indicator lives in a keyed subtree
+ * that React remounts on every tab switch, so seeding the initial state from here keeps the
+ * displayed level stable across remounts instead of flashing the "unknown" full bar until
+ * the initial fetch resolves.
+ */
+let lastReading: Battery | null = null;
+
+/**
  * Reads the console's battery level. SteamOS exposes it through the Steam client's System API, and the
  * field names differ between the Deck/PS5 runtime (`GetBatteryDetail` → `nBatteryPercentage`) and the
  * type definitions (`RegisterForBatteryStateChanges` → `flLevel`/`eACState`), so each reader tolerates
  * both. `System` is cast to `any` because the typed surface doesn't declare `GetBatteryDetail`.
  */
 export function useBattery(): Battery {
-  const [hasBattery, setHasBattery] = useState(true);
-  const [level, setLevel] = useState<number | null>(null);
-  const [charging, setCharging] = useState(false);
+  // Seed from the module-level cache so a remount (e.g. tab switch) starts with the last
+  // known reading rather than "unknown".
+  const [hasBattery, setHasBattery] = useState(lastReading?.hasBattery ?? true);
+  const [level, setLevel] = useState<number | null>(lastReading?.level ?? null);
+  const [charging, setCharging] = useState(lastReading?.charging ?? false);
 
   useEffect(() => {
     const system: any = window.SteamClient?.System;
@@ -29,7 +39,6 @@ export function useBattery(): Battery {
 
     const read = (detail: any) => {
       if (!detail) return;
-      if (detail.bHasBattery === false) setHasBattery(false);
       // The runtime reports the level as `nBatteryPercentage` (0–100) while the typed
       // `BatteryState` carries `flLevel` as a 0–1 fraction, which must be scaled up
       // before rounding or a ~1.0 fraction rounds down to "0%".
@@ -42,9 +51,17 @@ export function useBattery(): Battery {
               ? fl * 100
               : fl
             : undefined;
-      if (typeof pct === "number" && Number.isFinite(pct)) setLevel(Math.round(clamp(pct)));
+      const level = typeof pct === "number" && Number.isFinite(pct) ? Math.round(clamp(pct)) : null;
       // EBatteryState.Charging = 2, EACState.Connected/ConnectedSlow = 2/3.
-      setCharging(detail.bCharging === true || detail.eBatteryState === 2 || detail.eACState === 2 || detail.eACState === 3);
+      const charging =
+        detail.bCharging === true || detail.eBatteryState === 2 || detail.eACState === 2 || detail.eACState === 3;
+      const hasBattery = detail.bHasBattery !== false;
+      // Cache the reading at module scope (keeping the last known level if this
+      // detail lacks one) so a remount can seed its initial state from it.
+      lastReading = { hasBattery, level: level ?? lastReading?.level ?? null, charging };
+      if (level !== null) setLevel(level);
+      setHasBattery(hasBattery);
+      setCharging(charging);
     };
 
     // Initial reading.
