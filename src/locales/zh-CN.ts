@@ -83,6 +83,7 @@ const zhCN: Strings = {
   settings: "设置",
   profile: "个人资料",
   powerTitle: "电源",
+  battery: "电池",
 
   viewPlayable: "可玩",
   viewCollection: "你的收藏",

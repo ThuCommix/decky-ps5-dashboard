@@ -83,6 +83,7 @@ const ko: Strings = {
   settings: "설정",
   profile: "프로필",
   powerTitle: "전원",
+  battery: "배터리",
 
   viewPlayable: "플레이 가능",
   viewCollection: "내 컬렉션",

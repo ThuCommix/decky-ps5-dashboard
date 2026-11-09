@@ -83,6 +83,7 @@ const zhTW: Strings = {
   settings: "設定",
   profile: "個人檔案",
   powerTitle: "電源",
+  battery: "電池",
 
   viewPlayable: "可遊玩",
   viewCollection: "你的收藏",

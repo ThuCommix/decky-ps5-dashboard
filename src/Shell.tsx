@@ -1,3 +1,4 @@
+import { useBattery, useShowBatteryPercentage } from "./hooks/useBattery";
 import { useSteamClockFormat } from "./hooks/useSteamClockFormat";
 import { Focusable, GamepadButton, GamepadEvent, Navigation } from "@decky/ui";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
@@ -6,6 +7,7 @@ import {
   MdApps,
   MdChat,
   MdDownload,
+  MdElectricBolt,
   MdFavorite,
   MdGroup,
   MdLocalOffer,
@@ -101,7 +103,31 @@ function Clock() {
   return <span className="psd-clock">{useClock(is24Hour)}</span>;
 }
 
-/** The time plus search, settings, power and the profile picture: the PS5's top right corner. */
+/**
+ * The PS5's monochrome battery: a vertical outlined cell with a proportional fill, a bolt while on
+ * AC, and the percentage beside it — but only while SteamOS' "Show Battery Percentage" is on.
+ * Low charge tints the cell yellow (11–20%) or red (0–10%). A plain (non-focusable) indicator,
+ * like the clock — the console has no battery menu.
+ */
+function BatteryIndicator() {
+  const { hasBattery, level, charging } = useBattery();
+  const showPercentage = useShowBatteryPercentage();
+  if (!hasBattery) return null;
+  const unknown = level === null;
+  const pct = level ?? 0;
+  const tint = unknown ? "" : level <= 10 ? " psd-battery-critical" : level <= 20 ? " psd-battery-low" : "";
+  return (
+    <span className={`psd-battery${tint}${unknown ? " psd-battery-unknown" : ""}`} title={t.battery}>
+      <span className="psd-battery-icon">
+        <span className="psd-battery-fill" style={{ height: unknown ? "100%" : `${pct}%` }} />
+      </span>
+      {charging && <MdElectricBolt className="psd-battery-bolt" />}
+      {showPercentage && <span className="psd-battery-pct">{unknown ? "…" : `${pct}%`}</span>}
+    </span>
+  );
+}
+
+/** The time plus search, settings, power, the profile picture and the battery: the PS5's top right corner. */
 function TopIcons() {
   const me = useMemo(persona, []);
   return (
@@ -114,6 +140,7 @@ function TopIcons() {
         label={me.name || t.profile}
         onActivate={steamWeb(PROFILE_URL)}
       />
+      <BatteryIndicator />
       <Clock />
     </Focusable>
   );

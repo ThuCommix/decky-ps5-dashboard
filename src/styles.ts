@@ -65,6 +65,42 @@ export const PS5_CSS = `
   color: #fff; font-size: 2.4vh; font-weight: 600; letter-spacing: 0.02em; white-space: nowrap;
   font-variant-numeric: tabular-nums; text-shadow: 0 1px 6px rgba(0,0,0,0.6); align-self: center;
 }
+/* PS5-style battery: a vertical white outlined cell with a proportional fill (bottom-up), a
+   terminal on top, and a bolt while on AC. Shown (non-focusable) between the avatar and the clock.
+   Low charge tints fill + outline: yellow at 11–20%, red at 0–10%. */
+.psd-battery {
+  display: inline-flex; align-items: center; gap: 0.7vh; align-self: center;
+  white-space: nowrap; color: #fff;
+}
+.psd-battery-icon {
+  position: relative; width: 2vh; height: 3.4vh; padding: 0.16vh;
+  border: 0.2vh solid rgba(255,255,255,0.9); border-radius: 0.45vh;
+  display: flex; align-items: flex-end;
+}
+/* The terminal nub on the top edge of the cell. */
+.psd-battery-icon::after {
+  content: ""; position: absolute; top: -0.52vh; left: 50%; transform: translateX(-50%);
+  width: 1.1vh; height: 0.34vh; border-radius: 0.2vh 0.2vh 0 0;
+  background: rgba(255,255,255,0.9);
+}
+.psd-battery-fill {
+  width: 100%; border-radius: 0.2vh; background: #fff;
+  transition: height 300ms ease;
+}
+/* 11–20%: yellow tint. 0–10%: red tint. Fill, outline and nub pick up the color. */
+.psd-battery-low .psd-battery-icon { border-color: #ffd60a; }
+.psd-battery-low .psd-battery-icon::after { background: #ffd60a; }
+.psd-battery-low .psd-battery-fill { background: #ffd60a; }
+.psd-battery-critical .psd-battery-icon { border-color: #ff453a; }
+.psd-battery-critical .psd-battery-icon::after { background: #ff453a; }
+.psd-battery-critical .psd-battery-fill { background: #ff453a; }
+.psd-battery-unknown .psd-battery-fill { opacity: 0.25; }
+.psd-battery-pct {
+  font-size: 2vh; font-weight: 600; letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums; text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+}
+.psd-battery-bolt { font-size: 2.2vh; line-height: 1; }
+.psd-battery-bolt svg { display: block; }
 
 /* ---------- background art ---------- */
 .psd-backdrop { position: absolute; inset: 0; }

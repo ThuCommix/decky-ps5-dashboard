@@ -81,6 +81,7 @@ const en = {
   settings: "Settings",
   profile: "Profile",
   powerTitle: "Power",
+  battery: "Battery",
 
   viewPlayable: "Playable",
   viewCollection: "Your Collection",

@@ -87,6 +87,7 @@ const uk: Strings = {
   settings: "Налаштування",
   profile: "Профіль",
   powerTitle: "Живлення",
+  battery: "Батарея",
 
   viewPlayable: "Можна грати",
   viewCollection: "Ваша колекція",

@@ -83,6 +83,7 @@ const tr: Strings = {
   settings: "Ayarlar",
   profile: "Profil",
   powerTitle: "Güç",
+  battery: "Batarya",
 
   viewPlayable: "Oynanabilir",
   viewCollection: "Koleksiyonun",

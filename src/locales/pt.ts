@@ -87,6 +87,7 @@ const pt: Strings = {
   settings: "Configurações",
   profile: "Perfil",
   powerTitle: "Energia",
+  battery: "Bateria",
 
   // Game library
   viewPlayable: "Jogáveis",

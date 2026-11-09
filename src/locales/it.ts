@@ -83,6 +83,7 @@ const it: Strings = {
   settings: "Impostazioni",
   profile: "Profilo",
   powerTitle: "Alimentazione",
+  battery: "Batteria",
 
   viewPlayable: "Giocabili",
   viewCollection: "La tua raccolta",

@@ -87,6 +87,7 @@ const ru: Strings = {
   settings: "Настройки",
   profile: "Профиль",
   powerTitle: "Питание",
+  battery: "Батарея",
 
   viewPlayable: "Можно играть",
   viewCollection: "Ваша коллекция",

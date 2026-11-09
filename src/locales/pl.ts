@@ -87,6 +87,7 @@ const pl: Strings = {
   settings: "Ustawienia",
   profile: "Profil",
   powerTitle: "Zasilanie",
+  battery: "Bateria",
 
   viewPlayable: "Grywalne",
   viewCollection: "Twoja kolekcja",

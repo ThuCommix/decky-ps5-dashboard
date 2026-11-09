@@ -83,6 +83,7 @@ const ja: Strings = {
   settings: "設定",
   profile: "プロフィール",
   powerTitle: "電源",
+  battery: "バッテリー",
 
   viewPlayable: "プレイ可能",
   viewCollection: "コレクション",

@@ -83,6 +83,7 @@ const es: Strings = {
   settings: "Ajustes",
   profile: "Perfil",
   powerTitle: "Encendido",
+  battery: "Batería",
 
   viewPlayable: "Jugables",
   viewCollection: "Tu colección",
