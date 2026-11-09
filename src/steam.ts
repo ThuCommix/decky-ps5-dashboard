@@ -218,8 +218,8 @@ export function lastPlayedText(app: App): string {
   return t.playedOverAYear;
 }
 
-export function playtimeText(app: App): string {
-  const m = app.minutes_playtime_forever ?? 0;
+export function playtimeText(app: App, minutes?: number): string {
+  const m = minutes ?? app.minutes_playtime_forever ?? 0;
   if (m < 60) return m > 0 ? t.minutesPlayed(m) : "";
   return t.hoursPlayed(Math.round(m / 60));
 }

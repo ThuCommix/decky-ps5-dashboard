@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import { MdEmojiEvents, MdSchedule, MdStarRate, MdTimer } from "react-icons/md";
 
 import { FOCUSED_CLASS, useFocusHook } from "./components";
-import { formatBytes, formatDuration, useAchievements, useHltb } from "./gameinfo";
+import { bestPlaytime, formatBytes, formatDuration, useAchievements, useHltb, usePlaytime } from "./gameinfo";
 import { t } from "./i18n";
 import { currentSettings } from "./settings";
 import { APP_TYPE_SHORTCUT, App, lastPlayedText, openAchievements, openDetails, openExternal, openStore } from "./steam";
@@ -64,8 +64,8 @@ function Bar({ value }: { value: number }) {
 
 function HltbCard({ app, onFocus }: { app: App; onFocus: () => void }) {
   const hltb = useHltb(app);
+  const played = bestPlaytime(app, usePlaytime(app));
   const times = hltb.state === "done" ? hltb.value : null;
-  const played = (app.minutes_playtime_forever ?? 0) * 60;
   const open = () =>
     openExternal(times?.id ? `https://howlongtobeat.com/game/${times.id}` : `https://howlongtobeat.com/?q=${encodeURIComponent(app.display_name)}`);
   return (
@@ -103,12 +103,12 @@ function HltbCard({ app, onFocus }: { app: App; onFocus: () => void }) {
 }
 
 function PlaytimeCard({ app, onFocus }: { app: App; onFocus: () => void }) {
-  const total = (app.minutes_playtime_forever ?? 0) * 60;
-  const recent = (app.minutes_playtime_last_two_weeks ?? 0) * 60;
+  const loaded = usePlaytime(app);
+  const total = bestPlaytime(app, loaded);
+  const recent = loaded.state === "done" && loaded.value ? loaded.value.recent : (app.minutes_playtime_last_two_weeks ?? 0) * 60;
   return (
     <InfoCard icon={<MdSchedule />} title={t.cardPlaytime} size="s" label={t.details} onActivate={() => openDetails(app)} onFocus={onFocus}>
       <div className="psd-infocard-big">{total > 0 ? formatDuration(total) : "—"}</div>
-      {/* Steam often doesn't count time in non-Steam shortcuts, but still knows when you last played them. */}
       <div className="psd-infocard-caption">{app.rt_last_time_played || total > 0 ? lastPlayedText(app) : t.cardPlaytimeNever}</div>
       {recent > 0 && <div className="psd-infocard-caption">{t.cardTwoWeeks(formatDuration(recent))}</div>}
     </InfoCard>

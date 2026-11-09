@@ -103,6 +103,51 @@ export function useAchievements(app: App | undefined): Loadable<Achievements> {
   return useDelayed(steam, 300, achievementsFor);
 }
 
+/** Seconds, from Steam's live playtime lookup. */
+export interface Playtime {
+  total: number;
+  recent: number;
+}
+
+const PLAYTIME_TTL_MS = 60 * 1000;
+const playtimeCache = new Map<number, { at: number; p: Promise<Playtime | null> }>();
+
+async function loadPlaytime(appid: number): Promise<Playtime | null> {
+  try {
+    const res = await SteamClient.Apps.GetPlaytime(appid);
+    const total = (Number(res?.nPlaytimeForever) || 0) * 60;
+    const recent = (Number(res?.nPlaytimeLastTwoWeeks) || 0) * 60;
+    if (total <= 0 && recent <= 0) return null;
+    return { total, recent };
+  } catch {
+    return null;
+  }
+}
+
+function playtimeFor(app: App): Promise<Playtime | null> {
+  const hit = playtimeCache.get(app.appid);
+  if (hit && Date.now() - hit.at < PLAYTIME_TTL_MS) return hit.p;
+  const p = loadPlaytime(app.appid);
+  playtimeCache.set(app.appid, { at: Date.now(), p });
+  return p;
+}
+
+/**
+ * The real playtime for a non-Steam shortcut. The library overview keeps 0 for those (it only
+ * counts the running session), but Steam's own app page reads `SteamClient.Apps.GetPlaytime`, which
+ * knows the accumulated time — this returns that number, or stays null when there's nothing extra.
+ */
+export function usePlaytime(app: App | undefined): Loadable<Playtime> {
+  const need = app?.app_type === APP_TYPE_SHORTCUT && (app.minutes_playtime_forever ?? 0) === 0;
+  return useDelayed(need ? app : undefined, 250, need ? playtimeFor : null);
+}
+
+/** Best known playtime total in seconds: the looked-up one when available, else the overview's. */
+export function bestPlaytime(app: App | undefined, loaded: Loadable<Playtime>): number {
+  if (loaded.state === "done" && loaded.value && loaded.value.total > 0) return loaded.value.total;
+  return app ? (app.minutes_playtime_forever ?? 0) * 60 : 0;
+}
+
 /** "45 min", "12 h", "12½ h". */
 export function formatDuration(seconds: number): string {
   if (seconds < 3600) return `${Math.max(1, Math.round(seconds / 60))} min`;

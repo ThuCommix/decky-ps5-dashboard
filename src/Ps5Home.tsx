@@ -19,6 +19,7 @@ import {
 
 import { ActionTile, Art, Button, GameTile, Row } from "./components";
 import { ActionCard, ActionCards, GameCards } from "./InfoCards";
+import { bestPlaytime, usePlaytime } from "./gameinfo";
 import { currentSettings } from "./settings";
 import { t } from "./i18n";
 import {
@@ -105,6 +106,8 @@ function Backdrop({ app, dim }: { app?: App; dim: boolean }) {
 
 /** Logo (or name), "Played today · 42 h played", then the white Play pill and the round "…" button. */
 function GameInfo({ pick, onFocus }: { pick?: Pick; onFocus: () => void }) {
+  const hookApp = pick && "app" in pick ? pick.app : undefined;
+  const played = bestPlaytime(hookApp, usePlaytime(hookApp));
   if (!pick) return null;
   if (!("app" in pick)) {
     return (
@@ -121,11 +124,11 @@ function GameInfo({ pick, onFocus }: { pick?: Pick; onFocus: () => void }) {
       </div>
     );
   }
-  const { app } = pick;
+  const app = pick.app;
   const running = runningAppId() === app.appid;
   const playable = app.installed || app.app_type === APP_TYPE_SHORTCUT;
   const label = running ? t.resume : playable ? t.play : t.viewGame;
-  const sub = [lastPlayedText(app), playtimeText(app)].filter(Boolean).join("  ·  ");
+  const sub = [lastPlayedText(app), playtimeText(app, Math.round(played / 60))].filter(Boolean).join("  ·  ");
   return (
     <div className="psd-info" key={app.appid}>
       <Art
