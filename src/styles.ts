@@ -163,15 +163,13 @@ export const PS5_CSS = `
   height: var(--psd-big); padding: 0 4vw;
   transition: transform 340ms cubic-bezier(0.22, 0.8, 0.24, 1); will-change: transform;
 }
-/* Bottom padding keeps the cards clear of Steam's button-hint footer. The height caps so the
-   hero's bottom edge stays at its 100%-scale screen position (46px + 8vh top space, 24.6vh home
-   row, 57vh hero) at every uiScale: the zoom grows every vh of content while the footer is a
-   Steam overlay that doesn't zoom, so a plain 57vh hero would push the cards below the visible
-   screen. The hero's empty space above the logo absorbs the excess. */
+/* The hero is exactly as tall as the game info inside it, so the logo sits right under the tiles
+   with no dead space, at every uiScale. Every vh of content renders the same on-screen size at any
+   scale (zoom and viewport shrink cancel out), so the bottom edge — and the Play button in it —
+   stays well above Steam's button-hint footer; a fixed height would have pinned that edge behind it. */
 .psd-hero {
   position: relative;
-  height: min(57vh, calc((46px + 89.6vh) / var(--psd-scale, 1) - 46px - 32.6vh));
-  padding: 0 4vw 7vh;
+  padding: 0 4vw 2vh;
   display: flex; flex-direction: column; justify-content: flex-end;
 }
 .psd-info { animation: psd-rise 400ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
@@ -186,20 +184,20 @@ export const PS5_CSS = `
   max-width: 60vw; font-size: 5vh; font-weight: 600; line-height: 1.1; text-shadow: 0 2px 10px rgba(0,0,0,0.75);
 }
 .psd-info-sub { margin-top: 1.4vh; font-size: 2vh; opacity: 0.88; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
-/* Play + "…" on the left, the info cards in the free space to their right. */
+/* The Play pill and the round "…" button; the info cards now sit in their own row below the hero. */
 .psd-action-row { display: flex; align-items: center; gap: 1.6vh; margin-top: 2.4vh; flex-shrink: 0; }
 .psd-buttons { display: flex; align-items: center; gap: 1.6vh; flex: 0 0 auto; }
-/* At high uiScale the capped hero can be shorter than its content; the bottom-aligned overflow would
-   spill up over the home row, so the logo (the only oversized piece) is allowed to flex down while
-   the buttons and cards keep their size. */
-.psd-info-logo, .psd-info-icon, .psd-info-title { min-height: 0; }
-.psd-info-sub, .psd-action-row { flex-shrink: 0; }
 
-/* ---------- info cards to the right of Play (HowLongToBeat, playtime, reviews, achievements) ---------- */
+/* ---------- info cards (HowLongToBeat, playtime, reviews, achievements), a row under the hero ---------- */
+/* The cards' own segment: it sits between the hero and the lower rows in the column flow, so
+   scrolling down reaches it before the lower rows. It aligns with the 4vw content margin. Named
+   psd-home-cards on purpose — the Media tab's grid is .psd-cards, and a shared name would merge the
+   two rules and squash this row into a single 36vh grid column. */
+.psd-home-cards { padding: 1vh 4vw 0; }
 /* min-width: 0 lets the row shrink; the cards give up width before the row runs off the screen. */
 .psd-infocards { display: flex; align-items: center; gap: 1.6vh; min-width: 0; }
 .psd-infocard {
-  position: relative; flex: 1 1 auto; min-width: 0; height: 14vh; padding: 1.3vh 1.8vh; overflow: hidden;
+  position: relative; flex: 1 1 auto; min-width: 0; height: 17vh; padding: 1.4vh 2vh; overflow: hidden;
   display: flex; flex-direction: column; gap: 0.7vh;
   border-radius: var(--psd-cr); background: rgba(10,14,26,0.74);
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
@@ -216,10 +214,11 @@ export const PS5_CSS = `
 .psd-infocard.psd-focused { background: rgba(28,36,58,0.92); transform: scale(1.03); }
 .psd-infocard.psd-focused::after { opacity: 1; }
 /* flex-basis is the card's size with room to spare; max-width keeps it there, and when all four
-   cards show at once they shrink to share the free width instead of running off the screen. */
-.psd-infocard-s { flex-basis: 22vh; max-width: 22vh; }
-.psd-infocard-m { flex-basis: 31vh; max-width: 31vh; }
-.psd-infocard-l { flex-basis: 40vh; max-width: 40vh; }
+   cards show at once they shrink to share the free width instead of running off the screen. With
+   the row back at the bottom it has the full screen width, so the sizes are generous. */
+.psd-infocard-s { flex-basis: 30vh; max-width: 30vh; }
+.psd-infocard-m { flex-basis: 44vh; max-width: 44vh; }
+.psd-infocard-l { flex-basis: 60vh; max-width: 60vh; }
 .psd-infocard-head {
   display: flex; align-items: center; gap: 0.8vh;
   font-size: 1.6vh; font-weight: 600; letter-spacing: 0.02em; color: rgba(255,255,255,0.7);

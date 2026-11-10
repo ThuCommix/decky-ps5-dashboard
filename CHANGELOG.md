@@ -17,11 +17,12 @@
 - **Correct playtime for non-Steam games.** Steam's library overview reports 0 for non-Steam shortcuts (it only
   counts the running session), so the "Your time" card and the playtime under the Play button now read Steam's own
   playtime, which knows the accumulated hours. Lookups run only for shortcuts and are cached for a minute.
-- **Info cards sit to the right of Play.** The time-to-beat, playtime and achievements cards now live in the free
-  space beside the Play button instead of under it, so the focus flows to them naturally and they fit without
-  crowding the buttons.
-- The game's hero area now caps its height at high UI scale, so the cards never spill into Steam's button-hint
-  footer or below the fold.
+- **Info cards sit under Play again.** The time-to-beat, playtime, reviews and achievements cards are back in a
+  row under the Play button, full screen width, so they can be larger. At a high UI scale that row falls below
+  the visible screen, so scrolling down focuses the cards first — one more press then reaches the rows below —
+  rather than jumping straight past them to the lower rows.
+- The game's hero area caps its height at high UI scale, so the cards' row keeps a stable spot below it and the
+  game info never drifts off screen.
 
 ## 1.10.0
 

@@ -104,7 +104,7 @@ function Backdrop({ app, dim }: { app?: App; dim: boolean }) {
   );
 }
 
-/** Logo (or name), "Played today · 42 h played", then the white Play pill, the round "…" button and the info cards. */
+/** Logo (or name), "Played today · 42 h played", then the white Play pill and the round "…" button. */
 function GameInfo({ pick, onFocus }: { pick?: Pick; onFocus: () => void }) {
   const hookApp = pick && "app" in pick ? pick.app : undefined;
   const played = bestPlaytime(hookApp, usePlaytime(hookApp));
@@ -120,7 +120,6 @@ function GameInfo({ pick, onFocus }: { pick?: Pick; onFocus: () => void }) {
             <Button label={t.open} preferredFocus onActivate={pick.go} onFocus={onFocus}>
               {t.open}
             </Button>
-            <ActionCards cards={pick.cards} onFocus={onFocus} />
           </Focusable>
         </div>
       </div>
@@ -148,11 +147,22 @@ function GameInfo({ pick, onFocus }: { pick?: Pick; onFocus: () => void }) {
           <Button round label={t.moreOptions} onActivate={(anchor) => openGameMenu(app, anchor)} onFocus={onFocus}>
             <MdMoreHoriz />
           </Button>
-          <GameCards app={app} onFocus={onFocus} />
         </Focusable>
       </div>
     </div>
   );
+}
+
+/**
+ * The info cards for the current pick, in their own segment under the hero. They sit between the
+ * game info and the lower rows in the column flow, so scrolling down focuses them first and only a
+ * further press reaches the lower rows. A game shows its stats cards; the Store / Game Library tiles
+ * show their shortcut cards.
+ */
+function HeroCards({ pick, onFocus }: { pick?: Pick; onFocus: (el: HTMLElement) => void }) {
+  if (!pick) return null;
+  if ("app" in pick) return <GameCards app={pick.app} onFocus={onFocus} />;
+  return <ActionCards cards={pick.cards} onFocus={onFocus} />;
 }
 
 interface TopRowProps {
@@ -319,6 +329,19 @@ export function HomeTab({ goTab }: { goTab: GoTab }) {
     const s = scroller.current;
     if (section && s) s.scrollTo({ top: section.offsetTop - s.clientHeight * LOWER_ROW_ANCHOR, behavior: "smooth" });
   }, []);
+  // Focusing the cards keeps the game info visible (no "lowered" fade) and scrolls just far enough to
+  // bring the whole row above Steam's button-hint footer, with a little breathing room below it. At
+  // 100% scale the cards already sit near the bottom, so it's a small nudge; at a higher uiScale the
+  // zoom pushes them below the fold and it reveals them instead of jumping straight to the lower rows.
+  const onCardsFocus = useCallback((el: HTMLElement) => {
+    setLowered(false);
+    const section = el.closest<HTMLElement>(".psd-home-cards");
+    const s = scroller.current;
+    if (!section || !s) return;
+    const footer = s.clientHeight * 0.08 + 8; // +8 local px ≈ 10px on screen at 125%
+    const top = Math.max(0, section.offsetTop + section.offsetHeight - s.clientHeight + footer);
+    s.scrollTo({ top, behavior: "smooth" });
+  }, []);
 
   return (
     <>
@@ -328,6 +351,9 @@ export function HomeTab({ goTab }: { goTab: GoTab }) {
         <TopRow recents={recents} goTab={goTab} onTopRow={onTopRow} />
         <div className="psd-hero">
           <GameInfo pick={pick} onFocus={toTop} />
+        </div>
+        <div className="psd-home-cards">
+          <HeroCards pick={pick} onFocus={onCardsFocus} />
         </div>
         <LowerRows favorites={favorites} installed={installed} goTab={goTab} onLowerRow={onLowerRow} />
         <div className="psd-bottom-space" />

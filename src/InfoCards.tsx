@@ -33,7 +33,7 @@ function InfoCard({
   size?: "s" | "m" | "l";
   label: string;
   onActivate: () => void;
-  onFocus: () => void;
+  onFocus: (el: HTMLElement) => void;
   children: ReactNode;
 }) {
   const ref = useFocusHook(onFocus);
@@ -64,7 +64,7 @@ function Bar({ value }: { value: number }) {
   );
 }
 
-function HltbCard({ app, onFocus }: { app: App; onFocus: () => void }) {
+function HltbCard({ app, onFocus }: { app: App; onFocus: (el: HTMLElement) => void }) {
   const hltb = useHltb(app);
   const played = bestPlaytime(app, usePlaytime(app));
   const times = hltb.state === "done" ? hltb.value : null;
@@ -104,7 +104,7 @@ function HltbCard({ app, onFocus }: { app: App; onFocus: () => void }) {
   );
 }
 
-function PlaytimeCard({ app, onFocus }: { app: App; onFocus: () => void }) {
+function PlaytimeCard({ app, onFocus }: { app: App; onFocus: (el: HTMLElement) => void }) {
   const loaded = usePlaytime(app);
   const total = bestPlaytime(app, loaded);
   const recent = loaded.state === "done" && loaded.value ? loaded.value.recent : (app.minutes_playtime_last_two_weeks ?? 0) * 60;
@@ -117,7 +117,7 @@ function PlaytimeCard({ app, onFocus }: { app: App; onFocus: () => void }) {
   );
 }
 
-function ReviewsCard({ app, onFocus }: { app: App; onFocus: () => void }) {
+function ReviewsCard({ app, onFocus }: { app: App; onFocus: (el: HTMLElement) => void }) {
   const pct = app.review_percentage_with_bombs ?? 0;
   const size = Number(app.size_on_disk ?? 0);
   if (!pct && !app.metacritic_score && !size) return null;
@@ -142,7 +142,7 @@ function ReviewsCard({ app, onFocus }: { app: App; onFocus: () => void }) {
   );
 }
 
-function AchievementsCard({ app, onFocus }: { app: App; onFocus: () => void }) {
+function AchievementsCard({ app, onFocus }: { app: App; onFocus: (el: HTMLElement) => void }) {
   const ach = useAchievements(app);
   // Appears once loaded and only for games that have achievements; it's last, so nothing shifts.
   if (ach.state !== "done" || !ach.value) return null;
@@ -172,8 +172,8 @@ function AchievementsCard({ app, onFocus }: { app: App; onFocus: () => void }) {
   );
 }
 
-/** The cards to the right of a game's Play button, PS5 style. */
-export function GameCards({ app, onFocus }: { app: App; onFocus: () => void }) {
+/** The info cards under a game's Play button, PS5 style. */
+export function GameCards({ app, onFocus }: { app: App; onFocus: (el: HTMLElement) => void }) {
   if (!currentSettings().infoCards) return null;
   const steam = app.app_type !== APP_TYPE_SHORTCUT;
   return (
@@ -187,7 +187,7 @@ export function GameCards({ app, onFocus }: { app: App; onFocus: () => void }) {
 }
 
 /** Shortcut cards under the Store and Game Library tiles. */
-export function ActionCards({ cards, onFocus }: { cards: ActionCard[]; onFocus: () => void }) {
+export function ActionCards({ cards, onFocus }: { cards: ActionCard[]; onFocus: (el: HTMLElement) => void }) {
   if (!currentSettings().infoCards || cards.length === 0) return null;
   return (
     <Focusable className="psd-infocards" flow-children="row">
