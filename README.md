@@ -6,11 +6,11 @@
 
 A [Decky Loader](https://decky.xyz) plugin for the Steam Deck and other handhelds running SteamOS.
 
-[![Latest release](https://img.shields.io/github/v/release/kromossomom-debug/decky-ps5-dashboard?label=release&color=0070D1)](https://github.com/kromossomom-debug/decky-ps5-dashboard/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/kromossomom-debug/decky-ps5-dashboard/total?color=0070D1)](https://github.com/kromossomom-debug/decky-ps5-dashboard/releases)
+[![Latest release](https://img.shields.io/github/v/release/thucommix/decky-ps5-dashboard?label=release&color=0070D1)](https://github.com/thucommix/decky-ps5-dashboard/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/thucommix/decky-ps5-dashboard/total?color=0070D1)](https://github.com/thucommix/decky-ps5-dashboard/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-0070D1)](LICENSE)
 [![Decky Loader](https://img.shields.io/badge/Decky-Loader-0070D1)](https://decky.xyz)
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-support-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/kromossomoc)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-support-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/thucommix)
 
 <img src="docs/screenshots/home.jpg" alt="PS5 Dashboard home screen with God of War selected" width="100%">
 
