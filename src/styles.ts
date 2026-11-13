@@ -132,11 +132,16 @@ export const PS5_CSS = `
 @keyframes psd-intro { from { opacity: 0; transform: translateX(8vh); } to { opacity: 1; transform: none; } }
 
 /* ---------- home ---------- */
-.psd-scroller { position: absolute; inset: 0; z-index: 2; overflow: hidden; }
+/*
+ * The scroller starts below the tabs (46px Steam bar + 8vh), not at the top of the screen, so whatever
+ * scrolls up is clipped there instead of showing through behind the Games / Media tabs and the top
+ * icons — the Media page starts below them too. The same 8vh is the clearance the top row used to get
+ * from its own spacer, so the unscrolled home screen sits exactly where it did before.
+ */
+.psd-scroller { position: absolute; inset: calc(46px + 8vh) 0 0 0; z-index: 2; overflow: hidden; }
 /* Going down to the lower rows fades the game row and info out, so nothing slides under the tabs. */
 .psd-home-row, .psd-hero { transition: opacity 250ms ease; }
 .psd-lowered .psd-home-row, .psd-lowered .psd-hero { opacity: 0; }
-.psd-top-space { height: calc(46px + 8vh); }
 .psd-section { margin-top: 1.5vh; }
 .psd-section-title { margin: 0 0 0 4vw; font-size: 2.4vh; font-weight: 500; }
 .psd-row {
@@ -269,7 +274,12 @@ export const PS5_CSS = `
 .psd-button-round { width: 6.4vh; border-radius: 50%; }
 .psd-button.psd-focused { background: #fff; color: #000; transform: scale(1.04); }
 .psd-button.psd-focused::after { opacity: 1; }
-.psd-bottom-space { height: 40vh; }
+/*
+ * Scroll slack after the last row. Every lower row anchors flush with the top of the scroller, so the
+ * slack has to be at least the visible height minus the last row's own height (~25vh), otherwise the
+ * browser clamps the scroll and the last row stops short of the top.
+ */
+.psd-bottom-space { height: 70vh; }
 
 /* ---------- tiles ---------- */
 .psd-tile { position: relative; flex: 0 0 auto; border-radius: var(--psd-cr); transition: transform 150ms ease; }

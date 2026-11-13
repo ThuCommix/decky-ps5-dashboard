@@ -68,14 +68,18 @@ Consequences that are easy to get wrong:
 The scroller is a `Focusable` with `flow-children="column"`; DOM order = navigation order:
 
 ```
-.psc-top-space (46px + 8vh — clears Steam's top bar)
 TopRow .psd-home-row        ← tile row; A/←→ between tiles
 .psd-hero                   ← logo + sub + Play/⋯; D-pad down from tiles lands on Play
 .psd-home-cards             ← info cards (GameCards or ActionCards); next press
 LowerRows                   ← Favorites / Installed / Shortcuts; further presses
-.psd-bottom-space (40vh)    ← scroll slack
+.psd-bottom-space (70vh)    ← scroll slack
 ```
 
+- **The scroller starts below the tabs** (`.psd-scroller { inset: calc(46px + 8vh) 0 0 0 }`), not at
+  the top of the screen, so anything that scrolls up is clipped there instead of showing through
+  behind the Games / Media tabs and the top icons (the Media page, `.psd-page`, starts below them
+  too). That 8vh is also the clearance the top row gets from Steam's bar, which is why there is no
+  top spacer element any more — don't add one back (it would push the home screen down).
 - **Required navigation flow:** Play button → info cards → lower rows. The cards are their own
   column-flow segment *on purpose* (moved out of the hero in v1.11.0) so they can be full-width
   and larger. Don't move them back beside the Play button.
@@ -85,12 +89,17 @@ LowerRows                   ← Favorites / Installed / Shortcuts; further press
   screen and broke at 125% (button behind the footer + ~29vh of dead space above the logo).
   Don't reintroduce fixed heights here.
 - **Scroll-on-focus pattern** (established, mirror it for new segments):
-  - `onLowerRow`: `section.offsetTop − clientHeight · 0.3` (`LOWER_ROW_ANCHOR`), and sets
-    `lowered` → fades the home row + hero (`.psd-lowered`).
-  - `onCardsFocus`: scrolls so the card row's bottom rests `clientHeight · 0.08 + 8px` above the
-    scroller bottom (8 local px ≈ 10px on screen at 125% — deliberate breathing room above
-    Steam's footer; the user asked for it). Does **not** set `lowered` — the game info stays
-    visible while cards are focused.
+  - `onLowerRow`: `section.offsetTop`, i.e. the row's title lands flush with the top of the
+    scroller, right under the tab bar, and the segment above (cards, hero) is out of view above the
+    clip — an anchor, not a "30% down the screen" offset. Also sets `lowered` → fades the home row +
+    hero (`.psd-lowered`). Every lower row must be able to reach that position, which is what the
+    70vh `.psd-bottom-space` is for (slack ≥ visible height − last row's height); with 40vh the
+    browser clamped the scroll and the last rows stopped short of the top.
+  - `onCardsFocus`: scrolls so the card row's bottom rests `0.08 · screen height + 8px` above the
+    bottom of the screen (8 local px ≈ 10px on screen at 125% — deliberate breathing room above
+    Steam's footer; the user asked for it). Measure the footer from `.psd-root`'s height, **not**
+    the scroller's: the scroller starts below the tabs, so its height is not the screen's. Does
+    **not** set `lowered` — the game info stays visible while cards are focused.
   - All offsets are in *local* (pre-zoom) px, which is what `offsetTop`/`clientHeight` report
     inside `.psd-root`.
 - **`PINNED` scroll guard:** the browser can auto-scroll clipped ancestors when Steam calls
@@ -138,7 +147,14 @@ LowerRows                   ← Favorites / Installed / Shortcuts; further press
 
 ## Current work state (Nov 2026)
 
-v1.11.0 (uncommitted as of writing): info cards moved from beside the Play button into their own
-full-width segment between hero and lower rows; navigation is Play → cards → lower rows; hero is
-content-sized; `.psd-home-cards` rename fixed the Media-grid collision; cards scroll into view
-above the footer with ~10px breathing room on focus. Verified on the Retroid Pocket 6 at 125%.
+v1.11.0: info cards moved from beside the Play button into their own full-width segment between
+hero and lower rows; navigation is Play → cards → lower rows; hero is content-sized;
+`.psd-home-cards` rename fixed the Media-grid collision; cards scroll into view above the footer
+with ~10px breathing room on focus. Verified on the Retroid Pocket 6 at 125%.
+
+v1.11.1 (uncommitted as of writing): the home scroller now starts below the tabs, so scrolled
+content is clipped there instead of running up behind the Games / Media tabs and the top icons (the
+top spacer `.psd-top-space` is gone — the scroller's own top offset does that job); focusing a lower
+row anchors its title flush under the tab bar with everything above out of view, and the bottom
+slack grew to 70vh so even the last row can reach that position. Geometry checked in a browser
+harness at 100%/125% equivalents; needs a pass on the Retroid Pocket 6.

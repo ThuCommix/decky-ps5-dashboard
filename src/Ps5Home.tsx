@@ -48,8 +48,6 @@ const RECENT_COUNT = 10;
 const ROW_COUNT = 14;
 /** Wait a moment before swapping the big background, so flicking through tiles doesn't strobe. */
 const BACKDROP_DELAY_MS = 140;
-/** Where a lower row sits once focused, as a share of the screen height from the top. */
-const LOWER_ROW_ANCHOR = 0.3;
 /** Kept on the top-row tile the game info belongs to, so it stays big while the Play button has focus. */
 const SELECTED_CLASS = "psd-selected";
 
@@ -323,22 +321,27 @@ export function HomeTab({ goTab }: { goTab: GoTab }) {
     },
     [toTop],
   );
+  // The scroller's own top edge is just below the tabs, so scrolling a section to offsetTop anchors it
+  // right under the tab bar and leaves the section above (cards, hero) out of view above the clip.
   const onLowerRow = useCallback((el: HTMLElement) => {
     setLowered(true);
     const section = el.closest<HTMLElement>(".psd-section");
     const s = scroller.current;
-    if (section && s) s.scrollTo({ top: section.offsetTop - s.clientHeight * LOWER_ROW_ANCHOR, behavior: "smooth" });
+    if (section && s) s.scrollTo({ top: section.offsetTop, behavior: "smooth" });
   }, []);
   // Focusing the cards keeps the game info visible (no "lowered" fade) and scrolls just far enough to
   // bring the whole row above Steam's button-hint footer, with a little breathing room below it. At
   // 100% scale the cards already sit near the bottom, so it's a small nudge; at a higher uiScale the
   // zoom pushes them below the fold and it reveals them instead of jumping straight to the lower rows.
+  // The footer is measured from the bottom of the screen (the root's height), not from the scroller's:
+  // the scroller starts below the tabs, so its height no longer ends at the screen's bottom edge.
   const onCardsFocus = useCallback((el: HTMLElement) => {
     setLowered(false);
     const section = el.closest<HTMLElement>(".psd-home-cards");
     const s = scroller.current;
     if (!section || !s) return;
-    const footer = s.clientHeight * 0.08 + 8; // +8 local px ≈ 10px on screen at 125%
+    const screen = s.closest<HTMLElement>(".psd-root")?.clientHeight ?? s.clientHeight;
+    const footer = screen * 0.08 + 8; // +8 local px ≈ 10px on screen at 125%
     const top = Math.max(0, section.offsetTop + section.offsetHeight - s.clientHeight + footer);
     s.scrollTo({ top, behavior: "smooth" });
   }, []);
@@ -347,7 +350,6 @@ export function HomeTab({ goTab }: { goTab: GoTab }) {
     <>
       <Backdrop app={backdrop} dim={lowered} />
       <Focusable className={`psd-scroller ${lowered ? "psd-lowered" : ""}`} ref={scroller} flow-children="column">
-        <div className="psd-top-space" />
         <TopRow recents={recents} goTab={goTab} onTopRow={onTopRow} />
         <div className="psd-hero">
           <GameInfo pick={pick} onFocus={toTop} />

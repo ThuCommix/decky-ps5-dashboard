@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.11.1
+
+- **The home screen no longer shows through the tabs.** Scrolling down used to push the game row, the info
+  cards and the rows below up behind the Games / Media tabs and the top icons, so two layers of text sat on
+  top of each other. The home screen's scrolling area now starts just under the tab bar (the same place the
+  Media tab's page starts), so whatever scrolls up is clipped there and the tabs stay readable.
+- **Favorites / Installed / Shortcuts anchor under the tabs.** Moving down to one of the lower rows now
+  scrolls that row's title flush with the top of the visible area instead of stopping a third of the way down
+  the screen, so the game info and cards above it are no longer peeking into view. The scroll slack at the
+  bottom grew along with it, so even the last row can reach that spot.
+
 ## 1.11.0
 
 - **The clock is on the dashboard.** The PS5's top-right corner now shows the current time, ticking live and
