@@ -1,6 +1,6 @@
 <div align="center">
 
-# PS5 Dashboard
+# PS5 Dashboard v2
 
 **Make SteamOS Game Mode look and feel like the PlayStation 5 home screen.**
 
@@ -12,7 +12,7 @@ A [Decky Loader](https://decky.xyz) plugin for the Steam Deck and other handheld
 [![Decky Loader](https://img.shields.io/badge/Decky-Loader-0070D1)](https://decky.xyz)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-support-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/thucommix)
 
-<img src="docs/screenshots/home.jpg" alt="PS5 Dashboard home screen with God of War selected" width="100%">
+<img src="docs/screenshots/home2.jpeg" alt="PS5 Dashboard home screen with God of War selected" width="100%">
 
 </div>
 
@@ -75,20 +75,11 @@ is here; on top of it this fork adds:
 
 | | |
 |:-:|:-:|
-| <img src="docs/screenshots/play.jpg" alt="Play button focused on Cyberpunk 2077"><br>**Play** focused, with the info cards | <img src="docs/screenshots/store.jpg" alt="Steam Store tile selected"><br>**Steam Store** tile with shortcut cards |
-| <img src="docs/screenshots/rows.jpg" alt="Favorites, Installed and Shortcuts rows"><br>**Favorites, Installed and Shortcuts** | <img src="docs/screenshots/library.jpg" alt="Game Library grid with filter pills"><br>**Game Library** |
-| <img src="docs/screenshots/media.jpg" alt="Media tab cards"><br>**Media** tab | |
+| <img src="docs/screenshots/home.jpeg" alt="Play button focused on Cyberpunk 2077"><br>**Play** focused, with the info cards | <img src="docs/screenshots/store.jpeg" alt="Steam Store tile selected"><br>**Steam Store** tile with shortcut cards |
+| <img src="docs/screenshots/favorites.jpeg" alt="Favorites, Installed and Shortcuts rows"><br>**Favorites, Installed and Shortcuts** | <img src="docs/screenshots/library.jpeg" alt="Game Library grid with filter pills"><br>**Game Library** |
+| <img src="docs/screenshots/media.jpeg" alt="Media tab cards"><br>**Media** tab | |
 
-> These screenshots are rendered from the plugin's own stylesheet at the Steam Deck's 1280×800 resolution, with
-> sample library data. The HowLongToBeat times shown are real.
-
-### Running on a handheld
-
-| | |
-|:-:|:-:|
-| <img src="docs/photos/handheld-home.jpg" alt="PS5 Dashboard on a handheld, God of War III selected"> | <img src="docs/photos/handheld-store.jpg" alt="PS5 Dashboard on a handheld, Steam Store selected"> |
-
-*Photos of an earlier build (v1.1) on the author's handheld, with Steam in Portuguese.*
+> Screenshots taken from SteamOS (ArmadaOS) running on Retroid Pocket 6.
 
 ## Installation
 
