@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.12.0
+
+- **Steam's own top bar is kept off the PS5 screens.** Pressing up from the top row no longer slides Steam's bar in
+  over the PS5 home — the global search plus the clock, WiFi, battery and avatar that the PS5 bar already shows.
+  Steam's own pages (store, settings, its library) keep their bar, and with the setting off the press behaves
+  exactly like stock Steam.
+- **More room for the layout.** The space the native bar reserved is now ours: the Games / Media tabs, the top
+  icons, the Media page and the home content all move up together, so every screen gains a little height. The
+  setting is the existing one, now called **Hide Steam's top bar**.
+- Changing a setting in the panel now applies to the PS5 screens immediately — the shell re-renders when a setting
+  changes, instead of only picking the new value up on the next visit.
+
 ## 1.11.1
 
 - **The home screen no longer shows through the tabs.** Scrolling down used to push the game row, the info

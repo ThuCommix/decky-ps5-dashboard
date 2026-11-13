@@ -24,9 +24,9 @@ import { Card, FOCUSED_CLASS, IconButton, useFocusReveal } from "./components";
 import { LibraryTab } from "./Library";
 import { t } from "./i18n";
 import { HomeTab } from "./Ps5Home";
-import { currentSettings } from "./settings";
 import { ROUTES, openStore, persona } from "./steam";
 import { PS5_CSS } from "./styles";
+import { useSettings } from "./hooks/useSettings";
 
 /** "games" and "media" are the two PS5 tabs; "library" is the Game Library screen opened from the home row. */
 export type TabId = "games" | "media" | "library";
@@ -176,9 +176,14 @@ export function Ps5Shell({ initialTab = "games" }: { initialTab?: TabId }) {
   const root = useRef<HTMLDivElement>(null);
   const contentNav = useRef<any>(null);
   const firstRender = useRef(true);
+  // Re-renders this screen when a setting changes, so what it renders from settings stays current.
+  const settings = useSettings();
+  /** Same gate as theme.ts: the setting that keeps Steam's top bar away and gives us `--psd-topbar`. */
+  const hideTopBar = settings.ps5Home && settings.hideTopStatus;
   useFocusReveal(root);
 
-  // Moving to another tab unmounts the focused tile, so hand focus to the new page's first item.
+  // Moving to another tab — or flipping the top-bar setting, which remounts the content node — unmounts
+  // the focused tile, so hand focus to the new page's first item.
   useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false;
@@ -197,11 +202,11 @@ export function Ps5Shell({ initialTab = "games" }: { initialTab?: TabId }) {
       }
     }, 30);
     return () => window.clearTimeout(timer);
-  }, [tab]);
+  }, [tab, hideTopBar]);
 
   const goTab = (next: TabId, view = "installed") => {
     // Every way into the Game Library comes through here, so this one check covers them all.
-    if (next === "library" && currentSettings().openSteamLibrary) {
+    if (next === "library" && settings.openSteamLibrary) {
       Navigation.Navigate(ROUTES.library);
       return;
     }
@@ -221,14 +226,26 @@ export function Ps5Shell({ initialTab = "games" }: { initialTab?: TabId }) {
     else if (button === GamepadButton.BUMPER_RIGHT) step(1);
   };
 
+  // Steam's top bar (search field, clock, WiFi, battery, avatar) slides in when the D-pad goes up past
+  // our top row, over the PS5 screens; everything in it is in our own bar already. Steam hands this
+  // handler to its own focus node, which keeps the callback it was created with — so it is *attached
+  // only while the setting is on* and `.psd-content` is keyed on that too (below): flipping the setting
+  // rebuilds the node, which is what makes the off state really let the press through.
+  const handleDirection = (e: GamepadEvent) => {
+    if (e.detail.button !== GamepadButton.DIR_UP) return;
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   return (
     <div className={`psd-root psd-tab-${tab}`} ref={root}>
       <style>{PS5_CSS}</style>
       <TabBar tab={tab} />
       <Focusable
-        key={tab}
+        key={`${tab}:${hideTopBar ? "no-top-bar" : "top-bar"}`}
         className="psd-content"
         flow-children="column"
+        onGamepadDirection={hideTopBar ? handleDirection : undefined}
         {...({ navRef: contentNav } as any)}
         onButtonDown={onButtonDown}
         onCancelButton={tab === "games" ? undefined : () => setTab("games")}

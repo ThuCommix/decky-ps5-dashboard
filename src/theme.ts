@@ -147,7 +147,14 @@ ${header.HeaderOpaque} {
   // The avatar, WiFi and battery come from the runtime `topStatus` scan; the clock is a stable key.
   // Only when the PS5 home is on: otherwise the native bar is the only status bar, so the search icon stays.
   if (st.ps5Home && st.hideTopStatus) {
+    // The bar itself is kept away in Shell.tsx (its up-press is swallowed), not here: the search UI that
+    // slides in isn't the element the header module's `DashboardBar` class points at, so hiding that left
+    // the bar on screen. What CSS *can* do is give our chrome the space back — the bar never shows, so
+    // `--psd-topbar` shrinks from the 46px it reserves to a plain top margin (see styles.ts).
     parts.push(`
+:root {
+  --psd-topbar: 4vh;
+}
 ${r.topStatus},
 ${header.Clock} {
   display: none !important;

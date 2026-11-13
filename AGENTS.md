@@ -55,10 +55,10 @@ Consequences that are easy to get wrong:
    Zoom scales the content up by `s` while SteamOS shrinks the CSS viewport by the same factor
    (`viewport = device / s`), so `X vh` = `X · deviceHeight/100` device px, independent of `s`.
    Don't "compensate" for scale in CSS; the zoom already did it.
-2. **Steam's own overlays do NOT zoom**: the top status bar (top 46px) and the bottom
-   button-hint footer (~bottom 8–9% of the screen). Content placed near either edge must leave
-   clearance in *device* terms. The footer is the usual culprit: anything below ~92% of screen
-   height gets hidden behind it at higher scales.
+2. **Steam's own overlays do NOT zoom**: the top bar (top 46px, kept off the PS5 screens — see
+   `--psd-topbar` under the home layout) and the bottom button-hint footer (~bottom 8–9% of the
+   screen). Content placed near either edge must leave clearance in *device* terms. The footer is
+   the usual culprit: anything below ~92% of screen height gets hidden behind it at higher scales.
 3. **Device targets:** Retroid Pocket 6, 5.5", 1920×1080 landscape, typically **125% UI scale**
    → CSS viewport 1536×864 (vh = 8.64px, vw = 15.36px). Steam Deck: 1280×800 at 100% (vh = 8px).
    Verify layouts at both 100% and 125% (and 150% for margin).
@@ -75,7 +75,31 @@ LowerRows                   ← Favorites / Installed / Shortcuts; further press
 .psd-bottom-space (70vh)    ← scroll slack
 ```
 
-- **The scroller starts below the tabs** (`.psd-scroller { inset: calc(46px + 8vh) 0 0 0 }`), not at
+- **`--psd-topbar` is the one place the top edge is defined.** It is the room our chrome leaves for
+  Steam's own top bar: `46px` while that bar is there (the fallback in every `var()`, for a root
+  rendered without the theme sheet) and `4vh` once the plugin keeps the bar away — theme.ts sets
+  `:root { --psd-topbar: 4vh }` in the `hideTopStatus` block. `.psd-tabbar` (top), `.psd-topicons`
+  (top − 1vh), `.psd-page` (+10vh) and `.psd-scroller` (+8vh) all hang off it, so the whole screen
+  moves up together; don't hard-code a px offset again. The two values and the up-press rule below must
+  stay in sync: only where the bar can't appear is the space free.
+- **Steam's own top bar is kept away from the PS5 screens.** It slides in when the D-pad goes up past
+  our top row (global search, clock, WiFi, battery, avatar — all of it already in our bar).
+  `Shell.tsx`'s `handleDirection` swallows `DIR_UP`, attached to `.psd-content` **only while the
+  setting is on**. Two lessons are baked into that: (1) hiding the bar in CSS does *not* work — the
+  search UI Steam slides in is not the element the header module's `DashboardBar` class points at
+  (tried `header.DashboardBar` and `[class*="DashboardBar"]`, the bar stayed on screen), so don't go
+  back to a CSS-only fix; (2) Steam's focus node keeps the callback it was created with, so a handler
+  that stays mounted and just returns early does not switch off again — with the setting off the press
+  stayed dead even after a reboot. That's why the prop is conditional **and** `.psd-content` is keyed
+  on the flag: flipping the setting rebuilds the node, so Steam re-reads it in both directions (the
+  focus-restore effect depends on `hideTopBar` for that reason — the remount drops the focus).
+- **Settings are read in render, not on demand.** `currentSettings()` is live for an event handler,
+  but anything a screen decides while rendering (which handlers it gives Steam's focus nodes, what
+  it passes down) is frozen until the next render. `useSettings()` (`hooks/useSettings.ts`,
+  `useSyncExternalStore` over `subscribeSettings` in settings.ts) re-renders the screen when the
+  panel changes a setting — that's why toggling one takes effect at once instead of on the next
+  visit. Use it for any new screen that renders from settings.
+- **The scroller starts below the tabs** (`.psd-scroller { inset: calc(var(--psd-topbar, 46px) + 8vh) 0 0 0 }`), not at
   the top of the screen, so anything that scrolls up is clipped there instead of showing through
   behind the Games / Media tabs and the top icons (the Media page, `.psd-page`, starts below them
   too). That 8vh is also the clearance the top row gets from Steam's bar, which is why there is no
@@ -152,9 +176,18 @@ hero and lower rows; navigation is Play → cards → lower rows; hero is conten
 `.psd-home-cards` rename fixed the Media-grid collision; cards scroll into view above the footer
 with ~10px breathing room on focus. Verified on the Retroid Pocket 6 at 125%.
 
-v1.11.1 (uncommitted as of writing): the home scroller now starts below the tabs, so scrolled
-content is clipped there instead of running up behind the Games / Media tabs and the top icons (the
-top spacer `.psd-top-space` is gone — the scroller's own top offset does that job); focusing a lower
-row anchors its title flush under the tab bar with everything above out of view, and the bottom
-slack grew to 70vh so even the last row can reach that position. Geometry checked in a browser
-harness at 100%/125% equivalents; needs a pass on the Retroid Pocket 6.
+v1.11.1: the home scroller now starts below the tabs, so scrolled content is clipped there instead of
+running up behind the Games / Media tabs and the top icons (the top spacer `.psd-top-space` is gone —
+the scroller's own top offset does that job); focusing a lower row anchors its title flush under the
+tab bar with everything above out of view, and the bottom slack grew to 70vh so even the last row can
+reach that position. Geometry checked in a browser harness at 100%/125% equivalents; needs a pass on
+the Retroid Pocket 6.
+
+v1.12.0 (uncommitted as of writing): an up-press is swallowed in `Shell.tsx` so Steam's own top bar
+never slides in over the PS5 screens; `--psd-topbar` drops to 4vh and our chrome moves up into the
+space. Hiding the bar in CSS was tried and does *not* work (the search UI isn't inside the
+`DashboardBar` element), and a handler that stays mounted keeps its first callback from Steam's focus
+node — so the handler is attached only while the setting is on and `.psd-content` is keyed on it,
+which rebuilds the node when the setting flips. `useSettings()` makes the flip land immediately.
+Not verified on a device yet: check both states of the setting after a reboot (on → up does
+nothing; off → up brings Steam's bar back).

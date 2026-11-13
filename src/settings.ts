@@ -22,7 +22,10 @@ export interface Settings {
   hideShelves: boolean;
   /** Hide the bottom button hint footer bar (A, B, X, Y). */
   hideBottomBar: boolean;
-  /** Hide the clock, WiFi, battery and avatar from Steam's own top bar (the PS5 bar already shows them). */
+  /**
+   * Hide Steam's own top bar on the PS5 screens: the up-press that slides it in is swallowed (Shell.tsx)
+   * and its status icons go too. The key is historic — it now hides the whole bar, not just the status.
+   */
   hideTopStatus: boolean;
   /** Use an SST (PlayStation) style font. */
   font: boolean;
@@ -82,8 +85,23 @@ export function withDefaults(stored: Partial<Settings> | null | undefined): Sett
 }
 
 let current: Settings = DEFAULT_SETTINGS;
+/** Screens that want a render when a setting changes (see hooks/useSettings). */
+const listeners = new Set<() => void>();
+
 /** The settings in effect, for screens that read them while rendering (set by the plugin's entry point). */
 export const currentSettings = () => current;
+
 export function setCurrentSettings(next: Settings) {
+  // The entry point calls this on every render(); only a real change should wake the screens up.
+  if (next === current) return;
   current = next;
+  for (const listener of listeners) listener();
+}
+
+/** Calls `listener` whenever the settings change. Returns the unsubscribe. React screens use useSettings(). */
+export function subscribeSettings(listener: () => void) {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
 }

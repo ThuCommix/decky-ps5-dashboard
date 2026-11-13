@@ -45,7 +45,7 @@ export const ROUTES = {
 };
 
 export const STORE_URL = "https://store.steampowered.com/";
-export const DONATE_URL = "https://buymeacoffee.com/kromossomoc";
+export const DONATE_URL = "https://buymeacoffee.com/thucommix";
 
 /** Opens the author's Buy Me a Coffee page in Steam's browser (closing the Quick Access menu first). */
 export function openDonate() {

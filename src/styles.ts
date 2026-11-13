@@ -24,11 +24,11 @@ export const PS5_CSS = `
 }
 .psd-root * { box-sizing: border-box; }
 .psd-content { position: absolute; inset: 0; }
-.psd-page { position: absolute; top: calc(46px + 10vh); left: 0; right: 0; bottom: 0; }
+.psd-page { position: absolute; top: calc(var(--psd-topbar, 46px) + 10vh); left: 0; right: 0; bottom: 0; }
 
 /* ---------- top: Games / Media on the left (L1 / R1), icons on the right ---------- */
 .psd-tabbar {
-  position: absolute; top: 46px; left: 4vw; z-index: 4; height: 5.4vh;
+  position: absolute; top: var(--psd-topbar, 46px); left: 4vw; z-index: 4; height: 5.4vh;
   display: flex; align-items: center; gap: 3.2vh; font-size: 2.7vh;
 }
 .psd-tab {
@@ -42,7 +42,7 @@ export const PS5_CSS = `
   font-size: 1.4vh; font-weight: 700; opacity: 0.85;
 }
 .psd-topicons {
-  position: absolute; top: 38px; right: 4vw; z-index: 4;
+  position: absolute; top: calc(var(--psd-topbar, 46px) - 1vh); right: 4vw; z-index: 4;
   display: flex; align-items: center; gap: 1.6vh;
 }
 .psd-icon-button {
@@ -138,7 +138,7 @@ export const PS5_CSS = `
  * icons — the Media page starts below them too. The same 8vh is the clearance the top row used to get
  * from its own spacer, so the unscrolled home screen sits exactly where it did before.
  */
-.psd-scroller { position: absolute; inset: calc(46px + 8vh) 0 0 0; z-index: 2; overflow: hidden; }
+.psd-scroller { position: absolute; inset: calc(var(--psd-topbar, 46px) + 8vh) 0 0 0; z-index: 2; overflow: hidden; }
 /* Going down to the lower rows fades the game row and info out, so nothing slides under the tabs. */
 .psd-home-row, .psd-hero { transition: opacity 250ms ease; }
 .psd-lowered .psd-home-row, .psd-lowered .psd-hero { opacity: 0; }

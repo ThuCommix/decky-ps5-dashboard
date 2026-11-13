@@ -65,8 +65,9 @@ is here; on top of it this fork adds:
   on. On a console without a battery it disappears.
 - **UI scale.** A new setting (80–160%, default 100%) that scales the plugin's own screens — handy on a small
   handheld or a large TV.
-- **Hide top bar status.** A new setting that hides the clock, WiFi, battery and avatar from Steam's own top bar,
-  since the PS5 bar already shows them.
+- **Steam's top bar, kept out of the PS5 screens.** Pressing up from the top row no longer slides Steam's own top
+  bar (search, clock, WiFi, battery, avatar) in over the PS5 home — everything in it is in the PS5 bar already.
+  The space it reserved now goes to the layout, and Steam's own pages keep their bar.
 - **Correct playtime for non-Steam games.** Non-Steam shortcuts now show their real accumulated playtime instead of
   the 0 that Steam's library overview reports for them.
 
@@ -140,7 +141,7 @@ Everything lives in the plugin panel in Quick Access. Settings are saved to
 | Style Steam's library | PS5-style capsules, focus and tabs in Steam's own library; turn off for Steam's look or TabMaster | On |
 | Clean home screen | Hides What's New, Friends and Recommended on Steam's own home | Off |
 | Hide bottom bar | Hides the controller button hints (A, B, X, Y) at the bottom of the screen | Off |
-| Hide top bar status | Hides the clock, WiFi, battery and avatar from Steam's own top bar (PS5 home on only) | On |
+| Hide Steam's top bar | Keeps Steam's own top bar (search, clock, WiFi, battery, avatar) off the PS5 screens, and moves our layout up into that space | On |
 | PlayStation-style font | Uses SST if installed, otherwise Noto Sans | On |
 
 ## Performance
@@ -215,9 +216,9 @@ main.py          Decky backend: settings and HowLongToBeat
 If you enjoy the plugin, you can buy the author a coffee. It helps keep it updated. The plugin's panel in Quick Access
 has a **Buy Me a Coffee** button too.
 
-<a href="https://buymeacoffee.com/kromossomoc"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="50"></a>
+<a href="https://buymeacoffee.com/thucommix"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="50"></a>
 
-Bug reports and ideas are welcome in [Issues](https://github.com/kromossomom-debug/decky-ps5-dashboard/issues).
+Bug reports and ideas are welcome in [Issues](https://github.com/thucommix/decky-ps5-dashboard/issues).
 
 ## Disclaimer
 
